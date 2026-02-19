@@ -1,0 +1,40 @@
+{
+  "policy_name": "NATEBJONES_CONTENT_AND_AGENT_POLICY",
+  "version": "2026-02-19",
+  "scopes": ["publish", "demo_execution", "prompt_library"],
+  "rules": [
+    {
+      "id": "no-credentials-in-demos",
+      "description": "Disallow publishing demos that contain live credentials or secret keys.",
+      "enforcement": "block",
+      "check": "contains_secrets == false"
+    },
+    {
+      "id": "pii-detection",
+      "description": "Detect and flag PII in transcripts or demo inputs.",
+      "enforcement": "require-remediation",
+      "check": "pii_score < 0.1"
+    },
+    {
+      "id": "external-action-approval",
+      "description": "Any demo that performs irreversible external actions requires human approval.",
+      "enforcement": "human-approval",
+      "check": "external_actions_count == 0 OR human_approved == true"
+    },
+    {
+      "id": "copyright-check",
+      "description": "Flag content likely to infringe copyright and require legal review.",
+      "enforcement": "require-remediation",
+      "check": "copyright_risk_score < 0.2"
+    }
+  ],
+  "roles": {
+    "publisher": ["ARCHON", "FORGE"],
+    "safety_reviewer": ["SENTRY"],
+    "auditor": ["KEEPER"]
+  },
+  "policy_metadata": {
+    "approved_by": "Nate B. Jones",
+    "contact": "policy@ natebjones.example"
+  }
+}
